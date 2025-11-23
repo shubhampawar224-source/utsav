@@ -1,0 +1,25 @@
+body {
+    background: #f8f9fa;
+}
+
+.placeholder-img {
+    background: #e9ecef;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+}
+
+.product-card img {
+    height: 180px;
+    object-fit: cover;
+}
+
+.card-title {
+    font-size: 1.05rem;
+}
+
+.category-badge {
+    font-size: 0.75rem;
+}

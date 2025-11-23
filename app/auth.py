@@ -9,14 +9,26 @@ ADMIN_PASS = os.environ.get("ADMIN_PASS", "admin123")
 _signer = URLSafeSerializer(SECRET_KEY, salt="session")
 
 
-def create_session_token(username: str) -> str:
-    return _signer.dumps({"user": username})
+def create_session_token(payload) -> str:
+    """Create a session token. `payload` may be a username string or a dict with keys like
+    `user`, `display_name`, `avatar_url`.
+    """
+    if isinstance(payload, str):
+        data = {"user": payload}
+    else:
+        data = payload
+    return _signer.dumps(data)
 
 
-def verify_session_token(token: str) -> str:
+def verify_session_token(token: str) -> dict:
+    """Verify token and return the stored payload as a dict.
+    Previously callers expected a username string; updated code should read `data.get('user')`.
+    """
     try:
         data = _signer.loads(token)
-        return data.get("user")
+        if isinstance(data, dict):
+            return data
+        return {"user": data}
     except BadSignature:
         raise HTTPException(status_code=401, detail="Invalid session")
 
@@ -26,7 +38,8 @@ def is_admin_authenticated(request: Request) -> bool:
     if not token:
         return False
     try:
-        user = verify_session_token(token)
+        data = verify_session_token(token)
     except HTTPException:
         return False
+    user = data.get("user") if isinstance(data, dict) else data
     return user == ADMIN_USER

@@ -1,0 +1,53 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <!-- left side: back to dashboard -->
+        <a class="btn btn-outline-secondary" href="/admin/manage">Dashboard</a>
+    </div>
+    <div>
+        <!-- right side: primary action -->
+        <a class="btn btn-primary" href="/admin/manage/products/create">Add Product</a>
+    </div>
+</div>
+
+<div class="card admin-card">
+    <div class="table-responsive">
+        <table class="table table-sm mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Created</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in products %}
+                <tr>
+                    <td>{{ p.id }}</td>
+                    <td style="width:80px">{% if p.image_filename %}<img src="/static/uploads/{{ p.image_filename }}"
+                            style="height:48px; max-width:72px; object-fit:contain">{% else %}-{% endif %}</td>
+                    <td>{{ p.name }}</td>
+                    <td>{{ p.category or '-' }}</td>
+                    <td>₹{{ '%.2f' | format(p.price) }}</td>
+                    <td>{{ p.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-primary" href="/admin/manage/products/edit/{{ p.id }}">Edit</a>
+                        <form method="post" action="/admin/manage/products/delete/{{ p.id }}"
+                            style="display:inline-block" onsubmit="return confirm('Delete product?')">
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

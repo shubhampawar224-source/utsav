@@ -4,24 +4,84 @@ from fastapi import FastAPI, Request, Form, UploadFile, File, Depends, status
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from scripts.seed import seed
 from sqlmodel import select
-from app.database import create_db_and_tables, get_session
+from app.database import create_db_and_tables, get_session, engine
 from app.models import Product
 from app.auth import create_session_token, verify_session_token, is_admin_authenticated, ADMIN_USER, ADMIN_PASS
 from sqlmodel import Session
+import urllib.parse
 
 UPLOAD_DIR = "static/uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-app = FastAPI(title="Electronics Shop")
+app = FastAPI(title="Utsav Electronics Shop")
 create_db_and_tables()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
-
+# include admin management router (separate admin manage area)
+from app import admin as admin_module
+app.include_router(admin_module.router)
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    # prefer a local hero image if provided in static/images/hero.*
+    hero_candidates = [
+        os.path.join('static', 'images', 'hero.jpg'),
+        os.path.join('static', 'images', 'hero.png'),
+        os.path.join('static', 'images', 'hero.jpeg'),
+    ]
+    hero_url = None
+    for p in hero_candidates:
+        if os.path.exists(p):
+            hero_url = '/' + p.replace('\\', '/')
+            break
+    if not hero_url:
+        hero_url = 'https://source.unsplash.com/1600x500/?electronics,store,shop'
+    # fetch latest products for specific categories to show in homepage latest section
+    latest = []
+    try:
+        with Session(engine) as session:
+            cats = ["RAM", "SSD", "UPS"]
+            # usd->inr rate
+            try:
+                usd_to_inr = float(os.getenv('USD_TO_INR_RATE', '83.0'))
+            except Exception:
+                usd_to_inr = 83.0
+            for c in cats:
+                stmt = select(Product).where(Product.category == c).order_by(Product.created_at.desc()).limit(1)
+                res = session.exec(stmt).first()
+                if res:
+                    if res.image_filename:
+                        image_url = f"/static/uploads/{res.image_filename}"
+                    else:
+                        image_url = f"https://via.placeholder.com/400x300?text={urllib.parse.quote_plus(res.name)}"
+                    # stored price is in INR already; present it as INR and also provide USD conversion
+                    try:
+                        price_inr = round(float(res.price), 2)
+                    except Exception:
+                        price_inr = None
+                    try:
+                        price_usd = round(float(res.price) / usd_to_inr, 2) if price_inr is not None else None
+                    except Exception:
+                        price_usd = None
+                    latest.append({
+                        "id": res.id,
+                        "name": res.name,
+                        "description": res.description,
+                        "price": res.price,
+                        "price_inr": price_inr,
+                        "price_usd": price_usd,
+                        "price_display": (f"₹{price_inr:.2f}" if price_inr is not None else (f"${price_usd:.2f}" if price_usd is not None else "")),
+                        "category": res.category,
+                        "image_url": image_url,
+                    })
+                else:
+                    latest.append(None)
+    except Exception:
+        latest = [None, None, None]
+
+    return templates.TemplateResponse("index.html", {"request": request, "hero_url": hero_url, "latest_products": latest})
 
 
 @app.get("/api/products")
@@ -37,20 +97,62 @@ def api_products(
         stmt = stmt.where((Product.name.contains(q)) | (Product.description.contains(q)))
     if category:
         stmt = stmt.where(Product.category == category)
+    # conversion rate USD -> INR (configurable via env var)
+    try:
+        usd_to_inr = float(os.getenv('USD_TO_INR_RATE', '83.0'))
+    except Exception:
+        usd_to_inr = 83.0
     total = session.exec(select(Product).from_statement(stmt)).all()
     # naive count
     items = session.exec(stmt.order_by(Product.id.desc()).offset((page - 1) * per_page).limit(per_page)).all()
     results = []
     for p in items:
+        # build a reasonable image URL: uploaded file or placeholder with product name
+        if p.image_filename:
+            image_url = f"/static/uploads/{p.image_filename}"
+        else:
+            image_url = f"https://via.placeholder.com/400x300?text={urllib.parse.quote_plus(p.name)}"
+        # treat stored price as INR (already in rupees)
+        try:
+            price_inr = round(float(p.price), 2)
+        except Exception:
+            price_inr = None
+        # also provide USD price if requested (optional)
+        try:
+            price_usd = round(float(p.price) / usd_to_inr, 2)
+        except Exception:
+            price_usd = None
+
         results.append({
             "id": p.id,
             "name": p.name,
             "description": p.description,
             "price": p.price,
+            "price_inr": price_inr,
+            "price_usd": price_usd,
             "category": p.category,
-            "image_url": f"/static/uploads/{p.image_filename}" if p.image_filename else None,
+            "image_url": image_url,
         })
     return {"total": len(total), "page": page, "per_page": per_page, "products": results}
+
+
+
+@app.get("/category/{category_name}", response_class=HTMLResponse)
+def category_page(request: Request, category_name: str):
+    # renders a category-focused page; products are loaded client-side via API
+    return templates.TemplateResponse("category.html", {"request": request, "category": category_name})
+
+
+@app.get("/services", response_class=HTMLResponse)
+def services_page(request: Request):
+    # simple services page
+    return templates.TemplateResponse("services.html", {"request": request})
+
+
+@app.get("/featured", response_class=HTMLResponse)
+def featured_page(request: Request):
+    # dedicated featured deals page
+    return templates.TemplateResponse("featured.html", {"request": request})
 
 
 @app.get("/product/{product_id}")
@@ -70,8 +172,14 @@ def admin_login_get(request: Request):
 def admin_login_post(request: Request, username: str = Form(...), password: str = Form(...)):
     # simple credential check; recommend env vars in production
     if username == ADMIN_USER and password == ADMIN_PASS:
-        token = create_session_token(username)
-        response = RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+        # include optional avatar if a static admin avatar exists
+        avatar_path = None
+        candidate = os.path.join('static', 'images', 'admin_avatar.png')
+        if os.path.exists(candidate):
+            avatar_path = '/' + candidate.replace('\\', '/')
+        payload = {"user": username, "display_name": username, "avatar_url": avatar_path}
+        token = create_session_token(payload)
+        response = RedirectResponse(url="/admin/manage", status_code=status.HTTP_303_SEE_OTHER)
         response.set_cookie("session", token, httponly=True)
         return response
     return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
@@ -86,10 +194,10 @@ def admin_logout():
 
 @app.get("/admin")
 def admin_page(request: Request, session: Session = Depends(get_session)):
+    # legacy admin entrypoint — redirect to the managed admin area
     if not is_admin_authenticated(request):
         return RedirectResponse(url="/admin/login", status_code=status.HTTP_302_FOUND)
-    products = session.exec(select(Product).order_by(Product.id.desc())).all()
-    return templates.TemplateResponse("admin.html", {"request": request, "products": products})
+    return RedirectResponse(url="/admin/manage", status_code=status.HTTP_302_FOUND)
 
 
 @app.post("/admin/upload")
@@ -117,7 +225,7 @@ async def admin_upload(
     session.commit()
     session.refresh(product)
 
-    return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse(url="/admin/manage/products", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.get("/admin/edit/{product_id}")
@@ -173,7 +281,7 @@ async def admin_edit_post(
     session.add(product)
     session.commit()
     session.refresh(product)
-    return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse(url="/admin/manage/products", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.post("/admin/delete/{product_id}")
@@ -193,4 +301,4 @@ def admin_delete(product_id: int, request: Request, session: Session = Depends(g
             pass
     session.delete(product)
     session.commit()
-    return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse(url="/admin/manage/products", status_code=status.HTTP_303_SEE_OTHER)

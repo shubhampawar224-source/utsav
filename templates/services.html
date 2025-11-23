@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Services - Utsav It Solutions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="/">Utsav It Solutions</a>
+            <div class="d-flex align-items-center ms-auto">
+                <div class="dropdown me-3">
+                    <button class="btn btn-outline-light dropdown-toggle" id="categoriesDropdown2"
+                        data-bs-toggle="dropdown" aria-expanded="false">Categories</button>
+                    <ul id="navbarCategories2" class="dropdown-menu dropdown-menu-end"
+                        aria-labelledby="categoriesDropdown2"></ul>
+                </div>
+                <a class="btn btn-outline-light" href="/admin">Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="row">
+            <section class="col-12">
+                <div class="mb-4">
+                    <h3>Our Services</h3>
+                    <p class="text-muted">We offer professional installation, maintenance and on-site support for your
+                        equipment.</p>
+                </div>
+
+                <div id="servicesList" class="row g-4">
+                    <div class="col-12 col-md-6" id="ups">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">UPS Installation</h5>
+                                <p class="card-text">Installation of home and office UPS systems, battery testing, and
+                                    power-conditioning setup.</p>
+                                <p class="small text-muted">Includes site survey, mounting, wiring and testing.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6" id="cctv">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">CCTV Installation</h5>
+                                <p class="card-text">Camera selection, installation, DVR/NVR configuration and remote
+                                    viewing setup for security.</p>
+                                <p class="small text-muted">We support wired and wireless systems, and provide training
+                                    for remote access.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6" id="maintenance">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Maintenance & Repair</h5>
+                                <p class="card-text">Routine maintenance, component replacement, diagnostics and repair
+                                    services for electronics.</p>
+                                <p class="small text-muted">Flexible service contracts available for businesses.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6" id="network">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Network Setup</h5>
+                                <p class="card-text">Router/switch setup, structured cabling, Wi-Fi planning and secure
+                                    network configuration.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mt-4">
+                    <h6>Request a Service</h6>
+                    <p class="small text-muted">Call us or email to schedule a site visit. For quick requests, use the
+                        admin contact form.</p>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'footer.html' %}
+</body>
+
+</html>

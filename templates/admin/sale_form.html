@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+{% extends 'admin/base_admin.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Record Sale</h3>
+    <a class="btn btn-outline-secondary" href="/admin/manage/sales">Back to Sales</a>
+</div>
+
+<div class="card p-3 admin-card">
+    <form method="post" action="/admin/manage/sales/create">
+        <div class="mb-3">
+            <label class="form-label">Product</label>
+            <select name="product_id" class="form-select">
+                {% for p in products %}
+                <option value="{{ p.id }}">{{ p.name }} — ₹{{ '%.2f' | format(p.price) }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">User</label>
+            <select name="user_id" class="form-select">
+                {% for u in users %}
+                <option value="{{ u.id }}">{{ u.name }} — {{ u.email }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Quantity</label>
+            <input type="number" name="quantity" class="form-control" value="1" min="1">
+        </div>
+        <button class="btn btn-primary">Record</button>
+    </form>
+</div>
+{% endblock %}
+
+</html>

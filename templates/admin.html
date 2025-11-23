@@ -1,35 +1,18 @@
-<!doctype html>
-<html lang="en">
+{% extends 'admin/base_admin.html' %}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin - Electronics Shop</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="/">Electronics Shop</a>
-            <div>
-                <a class="btn btn-outline-light" href="/admin/logout">Logout</a>
-            </div>
-        </div>
-    </nav>
-
-    <main class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <h4>Add Product</h4>
-                <form action="/admin/upload" method="post" enctype="multipart/form-data">
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card admin-card p-3">
+                <h5 class="mb-3">Add Product</h5>
+                <form action="/admin/manage/products/create" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label class="form-label">Name</label>
                         <input class="form-control" type="text" name="name" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Price (USD)</label>
+                        <label class="form-label">Price (INR)</label>
                         <input class="form-control" type="number" step="0.01" name="price" required>
                     </div>
                     <div class="mb-3">
@@ -47,19 +30,22 @@
                     <button class="btn btn-success" type="submit">Upload Product</button>
                 </form>
             </div>
-            <div class="col-md-6">
-                <h4>Existing Products</h4>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card admin-card p-3">
+                <h5 class="mb-3">Existing Products</h5>
                 <div class="list-group">
                     {% for p in products %}
                     <div class="list-group-item d-flex justify-content-between align-items-center">
                         <div>
                             <strong>{{ p.name }}</strong><br>
-                            <small class="text-muted">${{ '%.2f'|format(p.price) }} · {{ p.category }}</small>
+                            <small class="text-muted">₹{{ '%.2f'|format(p.price) }} · {{ p.category }}</small>
                         </div>
                         <div class="d-flex gap-2">
                             <a class="btn btn-sm btn-outline-primary" href="/product/{{ p.id }}">View</a>
-                            <a class="btn btn-sm btn-outline-secondary" href="/admin/edit/{{ p.id }}">Edit</a>
-                            <form method="post" action="/admin/delete/{{ p.id }}"
+                            <a class="btn btn-sm btn-outline-secondary"
+                                href="/admin/manage/products/edit/{{ p.id }}">Edit</a>
+                            <form method="post" action="/admin/manage/products/delete/{{ p.id }}"
                                 onsubmit="return confirm('Delete this product?');">
                                 <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
                             </form>
@@ -71,9 +57,6 @@
                 </div>
             </div>
         </div>
-    </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html>
+    </div>
+</div>
+{% endblock %}

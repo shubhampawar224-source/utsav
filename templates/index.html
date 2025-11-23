@@ -13,39 +13,49 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
         <div class="container">
-            <a class="navbar-brand" href="/">Electronics Shop</a>
-            <div class="d-flex">
-                <a class="btn btn-outline-light me-2" href="/admin">Admin</a>
+            <a class="navbar-brand" href="/">Utsav It Solutions</a>
+            <div class="d-flex align-items-center ms-auto">
+                <div class="dropdown me-3">
+                    <!-- plain text toggle: hover/keyboard will open the dropdown -->
+                    <span id="categoriesToggle" class="nav-link text-light" role="button" tabindex="0">Categories</span>
+                    <ul id="navbarCategories" class="dropdown-menu dropdown-menu-end"
+                        aria-labelledby="categoriesToggle"></ul>
+                </div>
+                <!-- <a class="btn btn-outline-light" href="/admin">Admin</a> -->
             </div>
         </div>
     </nav>
 
     <main class="container">
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <input id="searchInput" class="form-control" placeholder="Search products (name or description)">
+        <!-- HERO -->
+        <section class="hero rounded mb-4" style="background-image: url('/static/uploads/home_page.png')">
+            <div class="hero-overlay">
+                <div class="hero-content container text-center text-white">
+                    <h1 class="display-5 fw-bold">Electronics & Components Marketplace</h1>
+                    <p class="lead">Find RAM, SSDs, Keyboards, Mice and more — curated deals every day</p>
+                    <div class="mx-auto" style="max-width:720px;">
+                        <input id="searchInput" class="form-control form-control-lg"
+                            placeholder="Search for RAM, SSD, keyboard, mouse...">
+                    </div>
+                </div>
             </div>
-            <div class="col-md-3">
-                <select id="categoryFilter" class="form-select">
-                    <option value="">All categories</option>
-                </select>
-            </div>
-            <div class="col-md-3 text-end">
-                <small id="resultsInfo" class="text-muted"></small>
-            </div>
-        </div>
+        </section>
 
-        <div id="products" class="row g-4">
-            <!-- products injected by JS -->
+        <div class="row">
+            <section class="col-12">
+                <!-- Featured horizontal scroller -->
+                {% include 'featured_partial.html' %}
+                <!-- show latest products partial below featured scroller -->
+                {% include 'latest_products.html' %}
+                <!-- include services partial -->
+                {% include 'services_partial.html' %}
+            </section>
         </div>
-
-        <nav class="mt-4">
-            <ul id="pagination" class="pagination justify-content-center"></ul>
-        </nav>
     </main>
 
     <script src="/static/js/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'footer.html' %}
 </body>
 
 </html>

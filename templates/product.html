@@ -28,9 +28,9 @@
             </div>
             <div class="col-md-7">
                 <h1>{{ product.name }}</h1>
-                <h3 class="text-success">${{ '%.2f'|format(product.price) }}</h3>
-                <p class="text-muted">Category: <span class="badge bg-primary">{{ product.category or 'General'
-                        }}</span></p>
+                <p class="mb-2"><span class="price-badge">₹{{ '%.2f'|format(product.price) }}</span></p>
+                <p class="text-muted">Category: <span class="category-badge">{{ product.category or 'General' }}</span>
+                </p>
                 <p>{{ product.description }}</p>
                 <a class="btn btn-outline-primary" href="/">Back to shop</a>
             </div>

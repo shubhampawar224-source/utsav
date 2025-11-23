@@ -1,25 +1,732 @@
+:root {
+    /* Iron Man / Orange-Red theme */
+    --fk-blue: #c62828;
+    /* primary red */
+    --fk-yellow: #ffb300;
+    /* gold accent */
+    --card-shadow: 0 8px 28px rgba(198, 40, 40, 0.08);
+}
+
 body {
-    background: #f8f9fa;
+    background: #f5f7fb;
+    color: #222;
+}
+
+/* Header */
+.navbar-brand {
+    font-weight: 700;
+    color: var(--fk-blue) !important;
+}
+
+/* Navbar-specific: remove border/shadow from Categories dropdown content only */
+.navbar #navbarCategories.dropdown-menu {
+    border: none !important;
+    box-shadow: none !important;
+    background: #fff;
+    /* keep white background for readability */
 }
 
 .placeholder-img {
-    background: #e9ecef;
-    height: 300px;
+    background: #f0f2f5;
+    height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #6c757d;
 }
 
+/* Product card */
+.product-card {
+    border: none;
+    box-shadow: var(--card-shadow);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
 .product-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+}
+
+.product-card .card-body {
+    padding: 0.75rem;
+}
+
+.product-card .card-title {
+    font-size: 0.95rem;
+    height: 2.4rem;
+    overflow: hidden;
+}
+
+.price-badge {
+    /* light, pill-style price badge using warm gold */
+    background: rgba(255, 179, 0, 0.12);
+    color: #7a120a;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-weight: 700;
+    border: 1px solid rgba(198, 40, 40, 0.06);
+}
+
+.category-badge {
+    font-size: 0.7rem;
+    background: rgba(255, 179, 0, 0.14);
+    color: #c62828;
+    padding: 0.2rem 0.45rem;
+    border-radius: 4px;
+}
+
+/* Buttons */
+.btn-primary {
+    background: var(--fk-blue);
+    border-color: var(--fk-blue);
+}
+
+.btn-outline-primary {
+    color: var(--fk-blue);
+    border-color: var(--fk-blue);
+}
+
+/* Admin list controls spacing */
+.list-group-item form {
+    display: inline-block;
+    margin: 0;
+}
+
+/* Category sidebar */
+#categoryList a {
+    color: #222;
+    text-decoration: none;
+}
+
+#categoryList a:hover {
+    color: var(--fk-blue);
+}
+
+@media (max-width: 991px) {
+    .product-card img {
+        height: 140px;
+    }
+}
+
+/* ensure card-top images (used in latest products) fit nicely */
+.product-card .card-img-top {
+    width: 100%;
     height: 180px;
     object-fit: cover;
 }
 
-.card-title {
-    font-size: 1.05rem;
+@media (max-width: 767px) {
+    .product-card .card-img-top {
+        height: 140px;
+    }
 }
 
-.category-badge {
-    font-size: 0.75rem;
+/* image wrapper to preserve full image visibility (contain) */
+.card-img-wrap {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f8f8;
+    overflow: hidden;
+}
+
+.card-img-wrap img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+@media (max-width: 767px) {
+    .card-img-wrap {
+        height: 140px;
+    }
+}
+
+@media (max-width: 991px) {
+
+    /* slightly shorter hero on tablet and mobile while keeping bottom focus */
+    .hero {
+        min-height: 380px;
+        background-position: center bottom;
+    }
+
+    .hero-overlay {
+        padding: 36px 0 68px;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero {
+        min-height: 300px;
+        background-position: center bottom;
+    }
+
+    .hero-overlay {
+        padding: 28px 0 48px;
+    }
+}
+
+/* HERO */
+.hero {
+    background-size: cover;
+    /* prefer showing lower part of hero image so components at bottom are visible */
+    background-position: center bottom;
+    /* make the hero taller so bottom area is visible on large screens */
+    min-height: 480px;
+    position: relative;
+}
+
+.hero-overlay {
+    background: linear-gradient(180deg, rgba(198, 40, 40, 0.45), rgba(255, 179, 0, 0.18));
+    /* add more bottom padding so content sits above a larger visible bottom area */
+    padding: 48px 0 84px;
+    border-radius: 8px;
+}
+
+.hero-content h1 {
+    color: #fff;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
+}
+
+/* Featured scroller */
+.featured-scroller {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 8px;
+}
+
+.featured-scroller .card {
+    min-width: 220px;
+    width: 220px;
+    flex: 0 0 auto;
+}
+
+.featured-scroller::-webkit-scrollbar {
+    height: 8px;
+}
+
+featured-scroller::-webkit-scrollbar-thumb {
+    background: rgba(255, 179, 0, 0.6);
+    border-radius: 8px;
+}
+
+/* Footer styles */
+.site-footer {
+    background: #0b1220;
+    color: #e6eefc;
+}
+
+.site-footer {
+    background: #2b0f0f;
+    color: #ffeccb;
+}
+
+.site-footer a {
+    color: #ffd27a;
+}
+
+.site-footer p,
+.site-footer li {
+    color: #cfe0ff;
+    opacity: 0.9;
+}
+
+/* Make hero search stand out */
+.hero .form-control-lg {
+    border-radius: 40px;
+    box-shadow: 0 10px 30px rgba(198, 40, 40, 0.12);
+}
+
+/* --- Electronics Galaxy Background --- */
+/* Subtle animated starfield and circuit-like overlay for hero and page */
+
+/* global starfield layer */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background-image:
+        radial-gradient(rgba(255, 255, 255, 0.9) 0.8px, transparent 0.9px),
+        radial-gradient(rgba(255, 255, 255, 0.6) 0.6px, transparent 0.7px),
+        radial-gradient(rgba(255, 200, 0, 0.35) 1px, transparent 1.4px);
+    background-size: 120px 120px, 80px 80px, 300px 300px;
+    background-position: 0 0, 40px 60px, 20px 10px;
+    opacity: 0.25;
+    animation: starsDrift 80s linear infinite;
+}
+
+/* subtle rotating radial glow to give a galaxy feel */
+.galaxy-glow {
+    position: absolute;
+    inset: -20%;
+    z-index: -3;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 179, 0, 0.06), transparent 15%),
+        radial-gradient(circle at 70% 70%, rgba(198, 40, 40, 0.04), transparent 20%);
+    filter: blur(30px);
+    animation: slowRotate 60s linear infinite;
+    pointer-events: none;
+}
+
+/* circuit-like overlay: faint thin lines and dots that slowly move */
+.circuit-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 24px),
+        repeating-linear-gradient(0deg, rgba(255, 179, 0, 0.02) 0 2px, transparent 2px 28px);
+    opacity: 0.18;
+    mix-blend-mode: screen;
+    animation: circuitsSlide 40s linear infinite;
+}
+
+/* make hero have intensified galaxy */
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 20% 20%, rgba(255, 179, 0, 0.08), transparent 12%),
+        radial-gradient(circle at 80% 80%, rgba(198, 40, 40, 0.06), transparent 18%);
+    mix-blend-mode: overlay;
+    animation: heroPulse 10s ease-in-out infinite;
+}
+
+/* gentle floating for some content cards */
+.product-card,
+.card {
+    transition: transform 0.45s cubic-bezier(.2, .9, .2, 1), box-shadow 0.45s;
+}
+
+.product-card:hover,
+.card:hover {
+    transform: translateY(-6px) scale(1.005);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.12);
+}
+
+/* Keyframes */
+@keyframes starsDrift {
+    from {
+        background-position: 0 0, 40px 60px, 20px 10px;
+    }
+
+    to {
+        background-position: -800px 200px, 240px -160px, -120px 320px;
+    }
+}
+
+@keyframes slowRotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes circuitsSlide {
+    from {
+        background-position: 0 0, 0 0;
+    }
+
+    to {
+        background-position: 800px 0, 0 600px;
+    }
+}
+
+@keyframes heroPulse {
+    0% {
+        opacity: 0.9;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.02);
+    }
+
+    100% {
+        opacity: 0.9;
+        transform: scale(1);
+    }
+}
+
+/* small responsive tweaks so the galaxy doesn't overwhelm small screens */
+@media (max-width: 576px) {
+    body::before {
+        opacity: 0.14;
+    }
+
+    .circuit-overlay {
+        opacity: 0.08;
+    }
+
+    .galaxy-glow {
+        filter: blur(20px);
+    }
+}
+
+/* Admin UI polish */
+.admin-sidebar {
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.admin-sidebar .nav-link {
+    padding-left: .5rem;
+    padding-right: .5rem;
+    border-radius: 6px;
+    color: #fff;
+}
+
+.admin-sidebar .nav-link:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.admin-sidebar .nav-link.active {
+    background: rgba(255, 179, 0, 0.06);
+    color: var(--fk-yellow) !important;
+}
+
+.admin-content {
+    padding-top: 0.25rem;
+}
+
+.admin-card {
+    padding: 1rem;
+}
+
+/* Admin navbar that shows the active view title */
+.admin-navbar {
+    /* slightly darker, richer orange-red so navbar reads stronger */
+    background: linear-gradient(90deg, rgba(198, 40, 40, 0.12), rgba(255, 179, 0, 0.06));
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid rgba(198, 40, 40, 0.12);
+}
+
+.admin-navbar h4 {
+    margin: 0;
+    color: #7a2b00;
+    font-weight: 700;
+}
+
+/* Ensure admin user inside the navbar aligns nicely */
+.admin-navbar .admin-user {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+}
+
+.admin-navbar .avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 0.9rem;
+}
+
+/* image avatar inside navbar */
+.avatar-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    display: inline-block;
+}
+
+/* Slightly darker primary buttons when shown inside the admin navbar */
+.admin-navbar .page-actions .btn-primary {
+    background: #a71f1f;
+    border-color: #a71f1f;
+    color: #fff;
+}
+
+.admin-navbar .page-actions .btn-primary:hover,
+.admin-navbar .page-actions .btn-primary:focus {
+    background: #8f1919;
+    border-color: #8f1919;
+}
+
+.admin-navbar .page-actions .btn-outline-secondary {
+    color: #2c2c2c;
+    border-color: rgba(0, 0, 0, 0.06);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.admin-sidebar .logo {
+    font-weight: 800;
+    font-size: 1.05rem;
+    margin-bottom: .5rem;
+}
+
+/* make tables easier to scan */
+table.table td,
+table.table th {
+    vertical-align: middle;
+}
+
+table.table tbody tr:nth-child(odd) {
+    background: rgba(11, 17, 32, 0.02);
+}
+
+/* responsive sidebar collapse */
+.admin-sidebar-collapsed {
+    transform: translateX(-100%);
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    top: 0;
+    height: 100vh;
+}
+
+.admin-topbar {
+    display: none;
+}
+
+@media (max-width: 991px) {
+    .admin-sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+        background: #1f1b1b;
+        z-index: 1050;
+        padding-top: 1.5rem;
+    }
+
+    .admin-sidebar.show {
+        transform: translateX(0);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+    }
+
+    .admin-topbar {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .admin-layout {
+        padding-left: 0;
+    }
+
+    .admin-content {
+        padding: 1rem;
+    }
+}
+
+/* subtle improvements to list-group and buttons */
+.list-group-item {
+    border: none;
+    border-radius: 6px;
+    margin-bottom: .4rem;
+}
+
+.btn-outline-secondary {
+    border-color: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    background: transparent;
+}
+
+/* Import a clean UI font for the admin dashboard */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+/* Admin typography */
+body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Admin inner content wrapper to center the dashboard area */
+.admin-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem 0;
+}
+
+/* Slightly more compact typography for admin area so more items fit on screen */
+.admin-content,
+.admin-inner {
+    font-size: 14px;
+    /* slightly smaller than browser default */
+    line-height: 1.4;
+}
+
+.admin-inner h3 {
+    font-size: 1.25rem;
+    margin-bottom: .25rem;
+}
+
+.admin-inner h6 {
+    font-size: .85rem;
+    color: #6b7280;
+}
+
+.admin-card,
+.stat-card {
+    font-size: 0.95rem;
+}
+
+.list-group-item {
+    font-size: 0.92rem;
+}
+
+/* Reduce padding on stat cards to fit more vertically */
+.stat-card {
+    padding: .9rem;
+}
+
+.stat-card h2 {
+    font-size: 1.5rem;
+}
+
+/* Stat cards on admin dashboard */
+.stat-row {
+    display: flex;
+    gap: 1rem;
+    align-items: stretch;
+}
+
+.stat-card {
+    flex: 1 1 0;
+    border-radius: 12px;
+    padding: 1.25rem;
+    background: linear-gradient(180deg, #fff, #fff);
+    box-shadow: 0 12px 30px rgba(2, 6, 23, 0.06);
+    text-align: center;
+}
+
+.stat-card h6 {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-bottom: .6rem;
+}
+
+/* Individual stat card color styles */
+.stat-card.stat-products {
+    background: linear-gradient(180deg, #fff7ed, #fff4e6);
+    border: 1px solid rgba(255, 179, 0, 0.12);
+    color: #7a2b00;
+}
+
+.stat-card.stat-users {
+    background: linear-gradient(180deg, #eef2ff, #eef6ff);
+    border: 1px solid rgba(59, 130, 246, 0.08);
+    color: #0f172a;
+}
+
+.stat-card.stat-sales {
+    background: linear-gradient(180deg, #ecfdf5, #f0fdf4);
+    border: 1px solid rgba(16, 185, 129, 0.08);
+    color: #064e3b;
+}
+
+/* Slightly reduce padding for chart card so graph is tighter */
+.dashboard-grid .card.admin-card {
+    padding: 0.75rem;
+}
+
+.dashboard-grid .card.admin-card .card-body {
+    padding: .6rem;
+}
+
+/* Scrollable list area used on admin dashboard */
+.scroll-list {
+    /* approx 10 items visible (item height ~48px) */
+    max-height: 480px;
+    overflow: auto;
+    padding-right: 0.5rem;
+}
+
+.scroll-list .list-group-item,
+.scroll-list .row>.col-12 {
+    border-radius: 6px;
+}
+
+/* nicer scrollbar for WebKit */
+.scroll-list::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+
+.scroll-list::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+}
+
+.scroll-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+@media (max-width: 991px) {
+    .scroll-list {
+        max-height: 360px;
+    }
+}
+
+@media (max-width: 576px) {
+    .scroll-list {
+        max-height: 300px;
+    }
+}
+
+.stat-card h2 {
+    font-size: 1.8rem;
+    margin: 0;
+    color: #111827;
+}
+
+/* Dashboard main grid spacing */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1rem;
+}
+
+.dashboard-grid .card {
+    padding: 1rem;
+}
+
+/* Admin topbar user avatar */
+.admin-user {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+}
+
+.admin-user .avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffd27a, #ffb300);
+    color: #3b1700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.08);
+}
+
+.admin-user-info .fw-semibold {
+    font-size: .95rem;
+}
+
+.admin-user-info .small {
+    font-size: .75rem;
+}
+
+@media (max-width: 991px) {
+    .admin-user-info {
+        display: none !important;
+    }
 }
